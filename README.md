@@ -13,8 +13,8 @@ Repo for all the work we do for the Roche_ZHAW Hackathon 2023
 - once you make changes and are happy with them you can type: git add . && git commit -m"your comment"; then git push to push the changees to the repote repo
 - the above can all be done visually as well with vscode if you use that. it doesn't matter what language you use, including word documents and pdfs. They can all go on github.
 - to see other peoples changes you should be able to git pull or first git branch (which lists all the branches) then git checkout <branchname> to see what other people have done. One the weekend we can choose what to do and merge everything. Once we have done that we can repeat the same process but everyone works individually on each thing.
+- Sorry I didn't realize there is an extra step! you have to say eg: git branch --set-upstream-to=origin/<yourname> <yourname> and then you can run git pull
 
 
 ### Best of luck everyone!!
-
 

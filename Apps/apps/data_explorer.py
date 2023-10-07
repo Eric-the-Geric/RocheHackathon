@@ -28,5 +28,6 @@ def app():
         st.header('**Pandas Profiling Report**')
 
         if st.button('Press to clean data'):
+            print("button pressed")
     else:
         st.info('Awaiting for CSV file to be uploaded.')

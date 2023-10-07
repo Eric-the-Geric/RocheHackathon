@@ -5,18 +5,13 @@ import streamlit as st
 def app():
 # Web App Title
     st.markdown('''
-# **The EDA App**
-
-    This is the **EDA App** created in Streamlit using the **pandas-profiling** library.
-
-    **Credit:** App built in `Python` + `Streamlit` by [Chanin Nantasenamat](https://medium.com/@chanin.nantasenamat) (aka [Data Professor](http://youtube.com/dataprofessor))
-
+# This page is used to create a cleaned dataset that is used for training the model 
     ---
     ''')
 
 # Upload CSV data
     with st.sidebar.header('1. Upload your CSV data'):
-        uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+        uploaded_file = st.sidebar.file_uploader("Upload your input CSV file that you would like to clean", type=["csv"])
         st.sidebar.markdown("""
     """)
 
@@ -28,8 +23,10 @@ def app():
             return csv
         df = load_csv()
         st.header('**Input DataFrame**')
-        st.write(df.head(100))
+        st.write(df.info())
         st.write('---')
         st.header('**Pandas Profiling Report**')
+
+        if st.button('Press to clean data'):
     else:
         st.info('Awaiting for CSV file to be uploaded.')

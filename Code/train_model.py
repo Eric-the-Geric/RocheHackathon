@@ -42,7 +42,7 @@ def train_and_save_model(
     if sampling_method == "RandomUnderSampler":
         rus = RandomUnderSampler(random_state=42)
         X_train, y_train = rus.fit_resample(X_train, y_train)
-    elif sampling_method == "SMOTE":
+    elif sampling_method == "RandomOverSampler":
         smote = SMOTE(random_state=42)
         X_train, y_train = smote.fit_resample(X_train, y_train)
     elif sampling_method == "Upsampling":

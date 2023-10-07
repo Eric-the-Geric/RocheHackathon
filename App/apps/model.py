@@ -1,7 +1,5 @@
 import streamlit as st
-import pickle
 import joblib
-import os
 
 
 def app():
@@ -10,8 +8,6 @@ def app():
     st.write('This is the `Model` page of the multi-page app.')
 
     st.write('The model performance of the Iris dataset is presented below.')
-
-
 
     model = joblib.load("models/saved_model.pkl")
 

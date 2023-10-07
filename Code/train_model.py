@@ -106,11 +106,11 @@ def train_and_save_model(
 
 if __name__ == "__main__":
     train_and_save_model(
-        data_path="./Data/Neonatal.csv",
+        data_path="../Data/Neonatal.csv",
         model_name="LR",
         sampling_method="RandomUnderSampler",
         split_ratio=0.3,
-        feature_selection_method="SelectKBest",
-        model_path="saved_model.pkl",
+        feature_selection_method=None,#"SelectKBest",
+        model_path="test.pkl",
         number_of_features=5,
     )

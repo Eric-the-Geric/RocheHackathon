@@ -11,7 +11,7 @@ def map_to_binary(value):
 
 
 def clean_neonatal_data(
-    file_path: str = "./Data/", file_name: str = "Neonatal_Sepsis_Registry.csv"
+    file_path: str = "../Data/", file_name: str = "Neonatal_Sepsis_Registry.csv"
 ):
     file_path = pathlib.Path(file_path)
     df = pd.read_csv(file_path / file_name)
@@ -44,4 +44,4 @@ def clean_neonatal_data(
 
 
 if __name__ == "__main__":
-    clean_neonatal_data(file_path="./Data", file_name="Neonatal_Sepsis_Registry.csv")
+    clean_neonatal_data(file_path="../Data", file_name="Neonatal_Sepsis_Registry.csv")

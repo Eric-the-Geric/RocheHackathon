@@ -5,8 +5,7 @@ from apps.helpers import clean_data
 def app():
 # Web App Title
     st.markdown('''
-# This page is used to create a cleaned dataset that is used for training the model 
-    ---
+# Clean a EOS data set and visualize it 
     ''')
 
 # Upload CSV data
@@ -30,9 +29,11 @@ def app():
         if st.button('Press to clean data'):
             if name == "":
                 name = "neonatal"
-                clean_data(df, "neonatal")
+                df = clean_data(df, "neonatal")
             else:
-                clean_data(df, name)
+                df = clean_data(df, name)
             st.write("data has been saved")
     else:
         st.info('Awaiting for CSV file to be uploaded.')
+
+

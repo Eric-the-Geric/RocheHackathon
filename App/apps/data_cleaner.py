@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-
+from apps.helpers import clean_data
 def app():
 # Web App Title
     st.markdown('''
@@ -24,10 +24,15 @@ def app():
         df = load_csv()
         st.header('**Input DataFrame**')
         st.write(df.info())
-        st.write('---')
-        st.header('**Pandas Profiling Report**')
+
+        name = st.text_input("name of file to be saved")
 
         if st.button('Press to clean data'):
-            print("button pressed")
+            if name == "":
+                name = "neonatal"
+                clean_data(df, "neonatal")
+            else:
+                clean_data(df, name)
+            st.write("data has been saved")
     else:
         st.info('Awaiting for CSV file to be uploaded.')

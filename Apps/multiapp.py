@@ -34,11 +34,11 @@ class MultiApp:
         """
         self.apps.append({
             "title": title,
-            "function": funct
+            "function": func
             })
 
     def run(self):
-        app = st.selectbox('Naviagtion',
+        app = st.selectbox('Navigation',
                            self.apps,
-                           format_func=lamda app: app['title'])
+                           format_func=lambda app: app['title'])
         app['function']()

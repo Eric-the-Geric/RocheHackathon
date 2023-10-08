@@ -1,9 +1,3 @@
-
-import pandas as pd
-import numpy as np
-import pathlib
-
-# ML imports
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
@@ -25,33 +19,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 import joblib
 
-def map_to_binary(value):
-    if value == 1 or value in [4, 5]:
-        return 1
-    else:
-        return 0
-
-
-def clean_data(df, name, list_intresting_parameters):
-    """ inputs:
-            df: dataframe to clean
-            name: string to save to csv
-            list_intresting_parameters: columns to use
-
-       outputs:
-           saves a csv
-
-    -Converts a the sepsis group to binary for easier classification
-    - groups all NaN values
-
-    """
-    df = df[list_intresting_parameters]
-    df.replace("NI", np.nan, inplace=True)
-    df = df[df["sepsis_group"] != 6]
-    df["sepsis_binary"] = df["sepsis_group"].apply(map_to_binary)
-    df = df.drop(columns=["sepsis_group"])
-    df = df.dropna()
-    df.to_csv(f"data/{name}.csv", index=False)
 
 def train_and_save_model(
     data_path,
@@ -59,7 +26,7 @@ def train_and_save_model(
     sampling_method=None,
     split_ratio=0.3,
     feature_selection_method=None,
-    model_path="saved_model.pkl",
+    saved_model="saved_model.pkl",
     number_of_features=5,
 ):
     data = pd.read_csv(data_path)
@@ -95,25 +62,46 @@ def train_and_save_model(
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Feature Selection
+    # Feature selection
     if feature_selection_method == "SelectKBest":
         selector = SelectKBest(mutual_info_classif, k=number_of_features)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, support in zip(X_train_scaled.columns, selector.get_support())
+            if support
+        ]
+
     elif feature_selection_method == "RFE":
         estimator = RandomForestClassifier()
         selector = RFE(estimator, 5)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, ranking in zip(X_train_scaled.columns, selector.ranking_)
+            if ranking == 1
+        ]
+
     elif feature_selection_method == "FeatureImportance":
         model_for_importance = RandomForestClassifier()
         model_for_importance.fit(X_train_scaled, y_train)
         selector = SelectFromModel(model_for_importance, threshold=0.05)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, support in zip(X_train_scaled.columns, selector.get_support())
+            if support
+        ]
+
     else:
         X_train_selected = X_train_scaled
         X_test_selected = X_test_scaled
+        selected_features = X_train_scaled.columns.tolist()
+
+    print("Selected Features:", selected_features)
 
     # Model initialization and training
     models = {
@@ -134,4 +122,21 @@ def train_and_save_model(
     print(f"{model_name}: {accuracy}")
 
     # Save the model
-    #joblib.dump(model, model_path)
+    joblib.dump(model, saved_model)
+
+
+if __name__ == "__main__":
+    train_and_save_model(
+        data_path="../Data/Neonatal.csv",
+        model_name="LR",
+        sampling_method="RandomUnderSampler",
+        split_ratio=0.3,
+<<<<<<< HEAD
+        feature_selection_method="SelectKBest",
+        saved_model="saved_model.pkl",
+=======
+        feature_selection_method=None,#"SelectKBest",
+        model_path="test.pkl",
+>>>>>>> 63c88f6 (added a kinda working model)
+        number_of_features=5,
+    )

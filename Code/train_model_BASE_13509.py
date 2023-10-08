@@ -1,9 +1,3 @@
-
-import pandas as pd
-import numpy as np
-import pathlib
-
-# ML imports
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
@@ -25,33 +19,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 import joblib
 
-def map_to_binary(value):
-    if value == 1 or value in [4, 5]:
-        return 1
-    else:
-        return 0
-
-
-def clean_data(df, name, list_intresting_parameters):
-    """ inputs:
-            df: dataframe to clean
-            name: string to save to csv
-            list_intresting_parameters: columns to use
-
-       outputs:
-           saves a csv
-
-    -Converts a the sepsis group to binary for easier classification
-    - groups all NaN values
-
-    """
-    df = df[list_intresting_parameters]
-    df.replace("NI", np.nan, inplace=True)
-    df = df[df["sepsis_group"] != 6]
-    df["sepsis_binary"] = df["sepsis_group"].apply(map_to_binary)
-    df = df.drop(columns=["sepsis_group"])
-    df = df.dropna()
-    df.to_csv(f"data/{name}.csv", index=False)
 
 def train_and_save_model(
     data_path,
@@ -134,4 +101,16 @@ def train_and_save_model(
     print(f"{model_name}: {accuracy}")
 
     # Save the model
-    #joblib.dump(model, model_path)
+    joblib.dump(model, model_path)
+
+
+if __name__ == "__main__":
+    train_and_save_model(
+        data_path="./Data/Neonatal.csv",
+        model_name="LR",
+        sampling_method="RandomUnderSampler",
+        split_ratio=0.3,
+        feature_selection_method="SelectKBest",
+        model_path="saved_model.pkl",
+        number_of_features=5,
+    )

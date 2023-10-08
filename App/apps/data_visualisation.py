@@ -16,6 +16,13 @@ def boxplot(df):
         st.write(" ### compare the box plots for sepsis and non sepsis")
         sns.boxplot(data=df, y=name, x="sepsis_binary")
         st.pyplot(fig)
+def violin(df):
+    name = st.selectbox("select a feature", df.columns.to_list())
+    if st.button("press to see violin plot for any feature in the dataset"):
+        fig = plt.figure(figsize=(6, 6))
+        st.write(" ### compare the box plots for sepsis and non sepsis")
+        sns.violinplot(data=df, y=name, x="sepsis_binary")
+        st.pyplot(fig)
 def app():
     st.title("visualize Your Cleaned Dataset")
 
@@ -24,12 +31,12 @@ def app():
     if csv is not None:
 
         df = pd.read_csv(csv)
-        st.write(df.head(10))
-        countplot(df)
-        boxplot(df)
+        if st.button("press to see some of the dataset") and not st.button("hide"):
+            st.write(df.head(10))
+        plots = [{"plot": "count", "function": countplot}, {"plot": "boxplot", "function": boxplot}, {"plot": "violin", "function": violin}]
 
-
-
+        plot = st.selectbox('Select a Plot', plots, format_func=lambda plot: plot['plot'])
+        plot['function'](df)
 
 
 

@@ -5,82 +5,43 @@ from datetime import time
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 def app():
     st.title('Use a pre-trained model model to predict EOS')
     
-    st.write('Please provide the data of the neonate so we can run inference')
+    model_path = st.selectbox("select a model", os.listdir("models/"))
+    model = joblib.load(f"models/{model_path}")
 
-    model = joblib.load("models/test.pkl")
-
+    data_path = st.selectbox("select the training data", os.listdir("data/"))
+    df = pd.read_csv("data/" +data_path)
+    df = df.iloc[:, :-1]
+    columns = df.columns.to_list()
     st.sidebar.write("Please adjust the following sliders to match the concerned neonate")
+    feature_count = []
+    for i, col in enumerate(columns):
+        feature_count.append(st.sidebar.slider(col, df[col].min(), df[col].max()))
 
-    x2 = st.sidebar.slider("sex",0,1,0)
-    x3 = st.sidebar.slider("birth_weight_kg",0.0, 6.0,)
-    x4 = st.sidebar.slider("onset_age_in_days",0, 500, 10)
-    x5 =st.sidebar.slider("onset_hour_of_day",0, 24)
-    x6 = st.sidebar.slider("stat_abx",0, 1, 0)
-    x7 = st.sidebar.slider("intubated_at_time_of_sepsis_evaluation",0, 1, 0)
-    x8 = st.sidebar.slider("inotrope_at_time_of_sepsis_eval",0,1, 0)
-    x9 = st.sidebar.slider("central_venous_line", 0, 1, 0)
-    x10 = st.sidebar.slider("umbilical_arterial_line",0, 1, 0)
-    x11 = st.sidebar.slider("ecmo",0, 1, 0)
-    x12 = st.sidebar.slider("temp_celsius",30.0, 60.0, 36.8)
-    x13 = st.sidebar.slider("comorbidity_necrotizing_enterocolitis",0, 1, 0)
-    x14 = st.sidebar.slider("comorbidity_chronic_lung_disease",0, 1, 0)
-    x15 = st.sidebar.slider("comorbidity_cardiac",0, 1, 0)
-    x16 = st.sidebar.slider("comorbidity_surgical",0, 1, 0)
-    x17 = st.sidebar.slider("comorbidity_ivh_or_shunt",0, 1, 0)
+    values = []
 
+    for i in range(len(feature_count)):
 
-    list_intresting_parameters = [
-        "sex",
-        "birth_weight_kg",
-        "onset_age_in_days",
-        "onset_hour_of_day",
-        "stat_abx",
-        "intubated_at_time_of_sepsis_evaluation",
-        "inotrope_at_time_of_sepsis_eval",
-        "central_venous_line",
-        "umbilical_arterial_line",
-        "ecmo",
-        "temp_celsius",
-        "comorbidity_necrotizing_enterocolitis",
-        "comorbidity_chronic_lung_disease",
-        "comorbidity_cardiac",
-        "comorbidity_surgical",
-        "comorbidity_ivh_or_shunt"
-    ]
-    values = [
-     x2,
-     x3,
-     x4,
-     x5,
-     x6,
-     x7,
-     x8,
-     x9,
-     x10,
-     x11,
-     x12,
-     x13,
-     x14,
-     x15,
-     x16,
-     x17]
+        values.append(feature_count[i])
 
     values = np.array(values)
-    values= values[None,...]
-    model_prediction = model.predict(values)
-    
-    if st.button("Press to run inference"):
+    values = values[None,...]
 
-        if model_prediction > 0:
-            st.write("Model has predicted EOS likely. Please take nessecary action")
+
+
+    if st.button("Press to run inference"):
+        prediction = model.predict(values)
+
+
+        if prediction > 0:
+            st.write("# Model has predicted EOS likely. Please take nessecary action")
             st.image(plt.imread('images/Danger.jpg'))
 
         else: 
-            st.markdown("Model has predicted EOS NOT likely but continue to monitor symptoms")
-
+            st.markdown("# Model has predicted EOS NOT likely but continue to monitor symptoms")
 
 
 

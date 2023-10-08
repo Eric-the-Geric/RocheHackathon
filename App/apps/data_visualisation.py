@@ -26,7 +26,7 @@ def violin(df):
 def app():
     st.title("visualize Your Cleaned Dataset")
 
-    csv = st.file_uploader("Please select the cleaned data")
+    csv = st.sidebar.file_uploader("Please select the cleaned data")
 
     if csv is not None:
 

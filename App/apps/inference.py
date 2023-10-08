@@ -3,14 +3,16 @@ import streamlit as st
 import joblib
 from datetime import time
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 import numpy as np
+import matplotlib.pyplot as plt
 def app():
     st.title('Use a pre-trained model model to predict EOS')
-
+    
     st.write('Please provide the data of the neonate so we can run inference')
 
     model = joblib.load("models/test.pkl")
+
+    st.sidebar.write("Please adjust the following sliders to match the concerned neonate")
 
     x2 = st.sidebar.slider("sex",0,1,0)
     x3 = st.sidebar.slider("birth_weight_kg",0.0, 6.0,)
@@ -68,7 +70,17 @@ def app():
 
     values = np.array(values)
     values= values[None,...]
+    model_prediction = model.predict(values)
+    
+    if st.button("Press to run inference"):
+
+        if model_prediction > 0:
+            st.write("Model has predicted EOS likely. Please take nessecary action")
+            st.image(plt.imread('images/Danger.jpg'))
+
+        else: 
+            st.markdown("Model has predicted EOS NOT likely but continue to monitor symptoms")
 
 
 
-    st.write(model.predict(values))
+

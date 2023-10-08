@@ -26,7 +26,7 @@ def train_and_save_model(
     sampling_method=None,
     split_ratio=0.3,
     feature_selection_method=None,
-    model_path="saved_model.pkl",
+    saved_model="saved_model.pkl",
     number_of_features=5,
 ):
     data = pd.read_csv(data_path)
@@ -62,25 +62,46 @@ def train_and_save_model(
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Feature Selection
+    # Feature selection
     if feature_selection_method == "SelectKBest":
         selector = SelectKBest(mutual_info_classif, k=number_of_features)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, support in zip(X_train_scaled.columns, selector.get_support())
+            if support
+        ]
+
     elif feature_selection_method == "RFE":
         estimator = RandomForestClassifier()
         selector = RFE(estimator, 5)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, ranking in zip(X_train_scaled.columns, selector.ranking_)
+            if ranking == 1
+        ]
+
     elif feature_selection_method == "FeatureImportance":
         model_for_importance = RandomForestClassifier()
         model_for_importance.fit(X_train_scaled, y_train)
         selector = SelectFromModel(model_for_importance, threshold=0.05)
         X_train_selected = selector.fit_transform(X_train_scaled, y_train)
         X_test_selected = selector.transform(X_test_scaled)
+        selected_features = [
+            feature
+            for feature, support in zip(X_train_scaled.columns, selector.get_support())
+            if support
+        ]
+
     else:
         X_train_selected = X_train_scaled
         X_test_selected = X_test_scaled
+        selected_features = X_train_scaled.columns.tolist()
+
+    print("Selected Features:", selected_features)
 
     # Model initialization and training
     models = {
@@ -101,7 +122,7 @@ def train_and_save_model(
     print(f"{model_name}: {accuracy}")
 
     # Save the model
-    joblib.dump(model, model_path)
+    joblib.dump(model, saved_model)
 
 
 if __name__ == "__main__":
@@ -111,6 +132,6 @@ if __name__ == "__main__":
         sampling_method="RandomUnderSampler",
         split_ratio=0.3,
         feature_selection_method="SelectKBest",
-        model_path="saved_model.pkl",
+        saved_model="saved_model.pkl",
         number_of_features=5,
     )

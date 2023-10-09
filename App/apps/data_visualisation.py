@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import os
 def countplot(df):
     if st.button("press to see the count plot"):
         fig = plt.figure(figsize=(10,4))
@@ -26,17 +26,17 @@ def violin(df):
 def app():
     st.title("visualize Your Cleaned Dataset")
 
-    csv = st.sidebar.file_uploader("Please select the cleaned data")
+    # csv = st.sidebar.file_uploader("Please select the cleaned data")
+    st.sidebar.write("1. Choose the cleaned dataset")
+    data_path = st.sidebar.selectbox("select the training data", os.listdir("data/"))
 
-    if csv is not None:
+    df = pd.read_csv("data/" + data_path)
+    if st.button("press to see some of the dataset") and not st.button("hide"):
+        st.write(df.head(10))
+    plots = [{"plot": "count", "function": countplot}, {"plot": "boxplot", "function": boxplot}, {"plot": "violin", "function": violin}]
 
-        df = pd.read_csv(csv)
-        if st.button("press to see some of the dataset") and not st.button("hide"):
-            st.write(df.head(10))
-        plots = [{"plot": "count", "function": countplot}, {"plot": "boxplot", "function": boxplot}, {"plot": "violin", "function": violin}]
-
-        plot = st.selectbox('Select a Plot', plots, format_func=lambda plot: plot['plot'])
-        plot['function'](df)
+    plot = st.selectbox('Select a Plot', plots, format_func=lambda plot: plot['plot'])
+    plot['function'](df)
 
 
 

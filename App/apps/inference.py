@@ -33,10 +33,11 @@ def app():
 
 
     if st.button("Press to run inference"):
-        prediction = model.predict(values)
+        prediction = model.predict_proba(values)
+        st.write(f"# Prediction for EOS: {prediction[0,1]*100:.2f}%")
 
 
-        if prediction > 0:
+        if prediction[0,0] < prediction[0,1]:
             st.write("# Model has predicted EOS likely. Please take nessecary action")
             st.image(plt.imread('images/Danger.jpg'))
 

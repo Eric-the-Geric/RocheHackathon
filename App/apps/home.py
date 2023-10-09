@@ -1,17 +1,34 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 
 
 def app():
+    st.markdown("""# EOSpectra
+## Goals
+- Easy-to-use
+- Build models easily using your own data
+- load pre-trained models
+- data overview
+- clean data
+- feature selection
+- Sepsis Prediction
+
+
+## Why this matters
+- Too many antibiotics are given to neonates
+    - This can cause issues in adulthood
+""")
+
+    st.image(plt.imread('images/baby.jpeg'))
     st.markdown("""
+- Data is very private
+    - This app allows for total data privacy and data can be kept local
 
-### This webapp is designed for doctors to use their own data to create a machine learning model to determine the likelyhood of Sepsis.
-- It should use non-invasive features
-- provides a tool for doctors to determine if a blood sample is required who can then determine if blood should be taken
+## Contact us!
 
-### Created by ACLS Masters students David, Tasos, Eric
-#### Links to socials:
-- linked in pages1
-- linked in pages2
-- linked in pages3
+Linked in:
+- [David de la Gala](https://www.linkedin.com/in/david-de-la-gala-1989rde/)
+- [Anastasios Bourtzos](https://www.linkedin.com/in/anastasiosbourtzos/)
+- [Eric Gericke](https://www.linkedin.com/in/eric-gericke-73499910b/)
     """)
 

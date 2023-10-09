@@ -11,8 +11,9 @@ from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.feature_selection import SelectFromModel
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.inspection import permutation_importance
+from sklearn.naive_bayes import GaussianNB
 
 def app():
     st.markdown("""
@@ -35,11 +36,11 @@ def app():
         # SPlit the data for train_test_split
         df_x = df.iloc[:,:-1]
         df_y = df.iloc[:, -1]
-        X_train, X_test, y_train, y_test = train_test_split(df_x, df_y, test_size=0.3, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(df_x, df_y, test_size=0.2, random_state=42)
 
 
         st.sidebar.write("2. Select a model")
-        models = [{"model": "gxboost", "object": XGBClassifier}, {"model": "forest", "object": RandomForestClassifier}]
+        models = [{"model": "gxboost", "object": XGBClassifier}, {"model": "forest", "object": RandomForestClassifier}, {"model": "Naive Bayes", "object": GaussianNB}]
         model = st.sidebar.selectbox('select a model to train', models, format_func=lambda model: model['model'])
        
 
@@ -57,6 +58,7 @@ def app():
 
         if st.button("show accuracy"):
             st.write(round(pipe.score(X_test, y_test), 2))
+            st.write(classification_report(pipe.predict(X_test), y_test))
 
             cm = confusion_matrix(pipe.predict(X_test), y_test)
             plot_confusion_matrix(cm)

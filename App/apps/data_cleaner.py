@@ -16,7 +16,6 @@ def app():
 
 # Pandas Profiling Report
     if uploaded_file is not None:
-        @st.cache_data
         def load_csv():
             csv = pd.read_csv(uploaded_file)
             return csv
@@ -25,19 +24,21 @@ def app():
         st.write(df.info())
 
         columns = df.columns.tolist()
-        st.write("Please select which columns you would like the model to train on")
-        selected_columns = st.multiselect("columns of the df", columns)
-        if "sepsis_group" not in selected_columns:
-            selected_columns.append("sepsis_group")
+
+        st.write("1. Please select which columns you would like the model to train on")
+        selected_columns = st.multiselect("Features", columns)
+
+        st.write("2. Please select which column you want the model to predict")
+        predict_column = st.selectbox("Target", columns)
 
         name = st.text_input("name of file to be saved")
 
         if st.button('Press to clean data'):
             if name == "":
                 name = "neonatal"
-                df = clean_data(df, "neonatal", selected_columns)
+                df = clean_data(df, "neonatal", selected_columns, predict_column)
             else:
-                df = clean_data(df, name, selected_columns)
+                df = clean_data(df, name, selected_columns, predict_column)
             st.write("data has been saved")
     else:
         st.info('Awaiting for CSV file to be uploaded.')

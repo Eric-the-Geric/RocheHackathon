@@ -32,7 +32,7 @@ def map_to_binary(value):
         return 0
 
 
-def clean_data(df, name, list_intresting_parameters):
+def clean_data(df, name, list_intresting_parameters, pred_col):
     """ inputs:
             df: dataframe to clean
             name: string to save to csv
@@ -45,11 +45,10 @@ def clean_data(df, name, list_intresting_parameters):
     - groups all NaN values
 
     """
-    df = df[list_intresting_parameters]
+    df = df[(list_intresting_parameters+[pred_col])]
     df.replace("NI", np.nan, inplace=True)
-    df = df[df["sepsis_group"] != 6]
-    df["sepsis_binary"] = df["sepsis_group"].apply(map_to_binary)
-    df = df.drop(columns=["sepsis_group"])
+    df["target"] = df[pred_col]
+    df = df.drop(columns=[pred_col])
     df = df.dropna()
     df.to_csv(f"data/{name}.csv", index=False)
 

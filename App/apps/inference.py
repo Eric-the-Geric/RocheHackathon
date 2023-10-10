@@ -6,8 +6,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+
 def app():
-    st.title('Use a pre-trained model model to predict EOS')
+    st.title('Use a pre-trained model model to predict Sepsis')
     
     model_path = st.selectbox("select a model", os.listdir("models/"))
     model = joblib.load(f"models/{model_path}")
@@ -22,27 +23,21 @@ def app():
         feature_count.append(st.sidebar.slider(col, df[col].min(), df[col].max()))
 
     values = []
-
     for i in range(len(feature_count)):
-
         values.append(feature_count[i])
-
     values = np.array(values)
     values = values[None,...]
 
+    #if st.button("Press to run inference"):
+    prediction = model.predict_proba(values)
+    st.write(f"# Prediction for Sepsis: {prediction[0,1]*100:.2f}%")
 
+    if prediction[0,0] < prediction[0,1]:
+        st.write("# Model has predicted Sepsis likely. Please take nessecary action")
+        st.image(plt.imread('images/Danger.jpg'))
 
-    if st.button("Press to run inference"):
-        prediction = model.predict_proba(values)
-        st.write(f"# Prediction for EOS: {prediction[0,1]*100:.2f}%")
-
-
-        if prediction[0,0] < prediction[0,1]:
-            st.write("# Model has predicted EOS likely. Please take nessecary action")
-            st.image(plt.imread('images/Danger.jpg'))
-
-        else: 
-            st.markdown("# Model has predicted EOS NOT likely but continue to monitor symptoms")
+    else: 
+        st.markdown("# Model has predicted Sepsis NOT likely but continue to monitor symptoms")
 
 
 

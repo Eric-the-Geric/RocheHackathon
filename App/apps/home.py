@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def app():
-    st.markdown("""# EOSpectra
+    st.markdown("""# Sepsense
 ## Goals
 - Easy-to-use
 - Build models easily using your own data
@@ -13,13 +13,12 @@ def app():
 - feature selection
 - Sepsis Prediction
 
-
 ## Why this matters
 - Too many antibiotics are given to neonates
     - This can cause issues in adulthood
 """)
 
-    st.image(plt.imread('images/baby.jpeg'))
+    st.image(plt.imread('images/baby.png'))
     st.markdown("""
 - Data is very private
     - This app allows for total data privacy and data can be kept local
@@ -31,4 +30,4 @@ Linked in:
 - [Anastasios Bourtzos](https://www.linkedin.com/in/anastasiosbourtzos/)
 - [Eric Gericke](https://www.linkedin.com/in/eric-gericke-73499910b/)
     """)
-
+5
